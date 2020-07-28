@@ -13,10 +13,11 @@
       href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
   </head>
   <body>
     <div class="container">
-      <h1>Corona Virus</h1>
+      <h1><img src="img/logo.png" class="logo" /> Corona Virus</h1>
       <h2>Tracker</h2>
       <h3 id="date">Date Time</h3>
 
@@ -29,9 +30,7 @@
           list="countries"
           placeholder="Enter a Country"
         />
-        <datalist id="countries">
-          <option value="World">World</option>
-        </datalist>
+        <datalist id="countries"> </datalist>
         <button>Search</button>
       </form>
 
@@ -53,7 +52,10 @@
           <i class="fa fa-long-arrow-up">0</i>
         </div>
       </div>
+
       <div class="chart"></div>
+      <div class="chart1"></div>
+      <footer>Made by Mohammad Sabil</footer>
     </div>
     <script src="app.js"></script>
   </body>

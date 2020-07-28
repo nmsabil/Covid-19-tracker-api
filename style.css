@@ -4,11 +4,25 @@
   font-family: "Poppins", sans-serif;
 }
 
+html {
+  min-height: 100%;
+  background: linear-gradient(
+      0deg,
+      rgba(10, 10, 0, 0.9),
+      rgba(255, 255, 255, 0.9)
+    ),
+    url(img/bg.png);
+  background-size: cover;
+}
 body {
   display: flex;
   justify-content: center;
 }
+body::before {
+  background-color: black;
+}
 .container {
+  background-color: #f3efef;
   min-width: 290px;
   max-width: 900px;
   margin: 15px 10px;
@@ -83,4 +97,19 @@ form button {
 }
 ::-webkit-scrollbar {
   display: none;
+}
+
+.chart canvas {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.logo {
+  max-width: 23px;
+}
+
+footer {
+  max-height: 50px;
+  color: black;
+  padding: 5px;
 }

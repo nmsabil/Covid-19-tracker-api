@@ -6,12 +6,17 @@ const confirmed = document.querySelector(".confirmed");
 const deaths = document.querySelector(".deaths");
 const recovered = document.querySelector(".recovered");
 const chart = document.querySelector(".chart");
+const chart1 = document.querySelector(".chart1");
 
 let dataChart = [];
 
 const API_URL = "https://api.covid19api.com/summary";
 
 async function covid(country) {
+  countries.innerHTML = `<option value="World">World</option>`;
+  resetValue(confirmed);
+  resetValue(deaths);
+  resetValue(recovered);
   const res = await fetch(API_URL);
   const data = await res.json();
 
@@ -27,15 +32,11 @@ async function covid(country) {
         NewDeaths,
         NewRecovered,
       } = data.Global;
-      // Total Confirmed
-      confirmed.children[1].textContent = TotalConfirmed;
-      confirmed.children[2].textContent = NewConfirmed;
-      // Total Deaths
-      deaths.children[1].textContent = TotalDeaths;
-      deaths.children[2].textContent = NewDeaths;
-      // Total Recovered
-      recovered.children[1].textContent = TotalRecovered;
-      recovered.children[2].textContent = NewRecovered;
+      total(TotalConfirmed, TotalDeaths, TotalRecovered);
+      newUpdate(NewConfirmed, NewDeaths, NewRecovered);
+
+      nameCountry.textContent = "Worldwide";
+      dataChart = [TotalConfirmed, TotalDeaths, TotalRecovered];
     }
 
     data.Countries.forEach((item) => {
@@ -44,20 +45,100 @@ async function covid(country) {
       option.textContent = item.Country;
       countries.appendChild(option);
       if (country === item.Country) {
-        // Total Confirmed
-        confirmed.children[1].textContent = item.TotalConfirmed;
-        confirmed.children[2].textContent = item.NewConfirmed;
-        // Total Deaths
-        deaths.children[1].textContent = item.TotalDeaths;
-        deaths.children[2].textContent = item.NewDeaths;
-        // Total Recovered
-        recovered.children[1].textContent = item.TotalRecovered;
-        recovered.children[2].textContent = item.NewRecovered;
+        total(item.TotalConfirmed, item.TotalDeaths, item.TotalRecovered);
+        newUpdate(item.NewConfirmed, item.NewDeaths, item.NewRecovered);
+
+        nameCountry.textContent = item.Country;
+        dataChart = [
+          item.TotalConfirmed,
+          item.TotalDeaths,
+          item.TotalRecovered,
+        ];
       }
     });
+    drawChart(dataChart);
+    drawLineChart(dataChart);
   } else {
     chart.innerHTML = `<h2>Loading...<.h2>`;
   }
+}
+
+function counting(target, element) {
+  const inc = target / speed;
+  const count = +element.textContent;
+  if (count < target) {
+    element.textContent = Math.ceil(count + inc);
+    setTimeout(() => {
+      counting(target, element);
+    }, 20);
+  } else {
+    element.textContent = target;
+  }
+}
+
+const speed = 100;
+
+function total(Confirmed, Deaths, Recovered) {
+  // Total Confirmed
+  counting(Confirmed, confirmed.children[1]);
+
+  // Total Deaths
+  counting(Deaths, deaths.children[1]);
+  // Total Recovered
+  counting(Recovered, recovered.children[1]);
+}
+
+function newUpdate(Confirmed, Deaths, Recovered) {
+  // New  Confirmed
+  counting(Confirmed, confirmed.children[2]);
+  // New  Deaths
+  counting(Deaths, deaths.children[2]);
+  // New Recovered
+  counting(Recovered, recovered.children[2]);
+}
+
+function resetValue(element) {
+  element.children[1].textContent = 0;
+  element.children[2].textContent = 0;
+}
+
+function drawChart(data) {
+  chart.innerHTML = "";
+  const ctx = document.createElement("canvas");
+  chart.appendChild(ctx);
+  const myChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Total Confirmed", "Total Deaths", "Total Recovered"],
+      datasets: [
+        {
+          label: nameCountry.textContent,
+          data: data,
+          backgroundColor: ["crimson", "black", "green"],
+        },
+      ],
+    },
+    options: {},
+  });
+}
+function drawLineChart(data) {
+  chart1.innerHTML = "";
+  const ctx = document.createElement("canvas");
+  chart.appendChild(ctx);
+  const myChart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: ["Total Confirmed", "Total Deaths", "Total Recovered"],
+      datasets: [
+        {
+          label: nameCountry.textContent,
+          data: data,
+          backgroundColor: ["crimson", "black", "green"],
+        },
+      ],
+    },
+    options: {},
+  });
 }
 
 covid(search.value);
